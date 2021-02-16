@@ -6,3 +6,9 @@ https://curt-park.github.io/2017-03-26/yolo/
 
 Custom YOLOv3
 https://nero.devstory.co.kr/post/pj-too-real-03/#Image-Gathering
+
+인스타그램 태그를 Word2vec으로 학습시킨 태그 벡터 공간
+https://github.com/muik/tag2vec
+
+인스타그램 크롤러
+https://github.com/huaying/instagram-crawler
