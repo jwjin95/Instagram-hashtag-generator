@@ -1,0 +1,8 @@
+YOLO 구현 과정
+https://devjin-blog.com/yolo-part1/
+
+YOLO 논문 요약
+https://curt-park.github.io/2017-03-26/yolo/
+
+Custom YOLOv3
+https://nero.devstory.co.kr/post/pj-too-real-03/#Image-Gathering
