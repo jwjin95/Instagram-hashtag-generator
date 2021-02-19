@@ -12,3 +12,7 @@ https://github.com/muik/tag2vec
 
 인스타그램 크롤러
 https://github.com/huaying/instagram-crawler
+
+Pre-trained VGG 사용하기
+https://eremo2002.tistory.com/57
+https://antilibrary.org/1998
