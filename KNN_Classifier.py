@@ -14,7 +14,7 @@ import operator
 import pandas as pd
 
 #전처리 모듈
-from preprocessing import PreprocessingHashtags
+from word2vec import Word2Vec
 
 
 #코사인 유사도 구하기 위한 함수
@@ -40,7 +40,7 @@ class KNN_Classifier :
         self.model = VGG19(weights='imagenet', include_top = False, input_shape= (224,224,3))
         self.names_of_knn = []
         self.dic_of_knn = {}
-        self.knn_csv = PreprocessingHashtags('data/knn_data.csv')
+        self.knn_csv = Word2Vec.PreprocessingHashtags_deletefreq(Word2Vec.PreprocessingHashtags('data/knn_data.csv'))
     
     #VGG19에 input 을 넣어주기 위한 전처리 과정
     def img_preprocess(self,img) :
@@ -67,7 +67,7 @@ class KNN_Classifier :
         for file in file_list :
             img = image.load_img('data/knn_img/'+file,target_size=(224,224))
             img = self.img_preprocess(img)
-            pickle_dic[file] = self.model(img)
+            pickle_dic[file] = self.model.predict(img)
             
         with open("data.pickle","wb") as fw:
             pickle.dump(pickle_dic,fw)
@@ -113,8 +113,33 @@ class KNN_Classifier :
                 
         return hash_list_2
     
-    #KNN으로 선정된 이미지들의 공통 토큰을 추출한다.
-    def get_comm_hash(self) :
-        comm_hash = []
+    #KNN으로 선정된 이미지들의 공통 토큰을 추출한다 count_num 이상의 수만큼의 사진에서 태그된 토큰들을 추출
+    def get_comm_token(self,count_num) :
+        tf = pd.DataFrame()
+        for name in self.names_of_knn :
+            tf = tf.append(self.knn_csv.loc[self.knn_csv['image_name'] == name])
+        
+        tf.index = range(len(tf))
+        token_list = Word2Vec.Tokenizer(tf)
+        
+        set_list = []
+        total_list = []
+        comm_token = []
+        
+        for t_list in token_list :
+            set_list.append(list(set(t_list)))
+        
+        for s_list in set_list :
+            total_list += s_list
+    
+        for token in total_list :
+            count = 0
+            for s_list in set_list :
+                count += s_list.count(token)
+            
+            if count >= count_num :
+                comm_token.append(token)
+
+        return list(set(comm_token))
         
 
