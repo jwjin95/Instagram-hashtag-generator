@@ -8,7 +8,7 @@ def Tokenizer(data):
     twitter = Twitter()
 
     # 사용자 사전 추가
-    txt = pd.read_csv('UserDic.txt', sep='\n')
+    txt = pd.read_csv('modeling/UserDic.txt', sep='\n')
     txt = txt['<사용자 사전>']
     for line in txt:
         twitter.add_dictionary(txt, 'Noun')
