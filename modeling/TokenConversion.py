@@ -1,6 +1,15 @@
-def NTokenConversion(model, t_list, alpha, n):
+def FirstTokenConversion(model, t_list):
+    
+    res = []
+    for t in t_list:
+        similar_tokens = model.wv.most_similar(t)
+        for i in range(len(similar_tokens)):
+            if similar_tokens[i][1]>=0.7:
+                res.append(similar_tokens[i])
+                
+    return res
 
-    """토큰 리스트에 대하여 토큰 전환"""
+def NTokenConversion(model, t_list, alpha, n):
 
     res = []
     for t in t_list:
@@ -11,13 +20,10 @@ def NTokenConversion(model, t_list, alpha, n):
 
     return res
 
-
 def TokenConversion(model, common_tokens, alpha):
-
-    """공통 토큰 전체에 대하여 토큰 전환"""
-
+    
     # 토큰 전환
-    ls1 = NTokenConversion(model, common_tokens, alpha, n=0)
+    ls1 = FirstTokenConversion(model, common_tokens)
     ls2 = NTokenConversion(model, ls1, alpha, n=1)
     ls3 = NTokenConversion(model, ls2, alpha, n=2)
     ls4 = NTokenConversion(model, ls3, alpha, n=3)
