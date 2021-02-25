@@ -1,5 +1,5 @@
 # 조건부 확률을 돌려주는 함수
-def getCondtnlProb(data, tokenized_tags, tkn, pivot):
+def getCondtnlProb(tokenized_tags, tkn, pivot):
     ret = []
     # 기준 토큰 등장 확률
     tkn_cnt = 0
@@ -38,7 +38,7 @@ def getCondtnlProb(data, tokenized_tags, tkn, pivot):
 
 # 필요 - 토큰들이 있는 리스트, 
 
-def TagExpansion(data, tokenized, tkn, alpha, pivot):    
+def TagExpansion(tokenized, tkn, alpha, pivot):    
     import pandas as pd
     import numpy as np
     # 토큰들이 들어있는 리스트?
@@ -47,13 +47,13 @@ def TagExpansion(data, tokenized, tkn, alpha, pivot):
 #         tokens = mecab.morphs(sentence)
 #         tokenized.append(tokens)
     
-    probs = getCondtnlProb(data, tokenized, tkn, pivot)
+    probs = getCondtnlProb(tokenized, tkn, pivot)
     if len(probs) == 0:
         return [tkn]
 
     probs2 = []
     for t in probs:
-        probs2.append(getCondtnlProb(data, tokenized, t[0], pivot/alpha))
+        probs2.append(getCondtnlProb(tokenized, t[0], pivot/alpha))
         
     probs3 = []
     for t in probs2:
@@ -62,7 +62,7 @@ def TagExpansion(data, tokenized, tkn, alpha, pivot):
         else:
             temp = []
             for i in range(len(t)):
-                temp.append(getCondtnlProb(data, tokenized, t[i][0], pivot/(alpha**2)))
+                temp.append(getCondtnlProb(tokenized, t[i][0], pivot/(alpha**2)))
         probs3.append(temp)
     
     hashtag = [tkn+probs[k][0] for k in range(len(probs)) ]
