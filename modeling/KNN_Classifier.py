@@ -14,7 +14,9 @@ import operator
 import pandas as pd
 import sys
 
-sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname('__file__')))+"/preprocessing")
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname('__file__')))+"/Instagram-hashtag-generator/preprocessing")
+
+print(os.path.dirname(os.path.abspath(os.path.dirname('__file__')))+"Instagram-hashtag-generator/preprocessing")
 #전처리 모듈
 from Preprocessing import PreprocessingHashtags,DeleteLowFreqHashtags
 from Tokenizer import Tokenizer
@@ -43,7 +45,7 @@ class KNN_Classifier :
         self.model = VGG19(weights='imagenet', include_top = False, input_shape= (224,224,3))
         self.names_of_knn = []
         self.dic_of_knn = {}
-        self.knn_csv = DeleteLowFreqHashtags(PreprocessingHashtags('../data/knn_data.csv'))
+        self.knn_csv = DeleteLowFreqHashtags(PreprocessingHashtags('data/knn_data.csv'))
     
     #VGG19에 input 을 넣어주기 위한 전처리 과정
     def img_preprocess(self,img) :
@@ -59,7 +61,7 @@ class KNN_Classifier :
     #KNN image 들을 VGG 모듈에 입력한 결과값들을 pickle에 저장해준다.
     #이는 나중에 target 이미지와 코사인유사도를 구할때 이용된다.
     def make_pickle(self) :
-        file_list = os.listdir("../data/knn_img")
+        file_list = os.listdir("data/knn_img")
         pickle_dic = {}
         for file in file_list :
             if not file.count('JPEG') and not file.count('JPG') :
@@ -72,12 +74,12 @@ class KNN_Classifier :
             img = self.img_preprocess(img)
             pickle_dic[file] = self.model.predict(img)
 
-        with open("KNNClassifier_data.pickle","wb") as fw:
+        with open("modeling/KNNClassifier_data.pickle","wb") as fw:
             pickle.dump(pickle_dic,fw)
     
     #저장해놓은 pickle 을 불러온다.
     def load_pickle(self) :
-        with open("KNNClassifier_data.pickle","rb") as fr:
+        with open("modeling/KNNClassifier_data.pickle","rb") as fr:
             self.pickle_dic = pickle.load(fr)
     
     #show_KNN 을 하여 target 이미지와 유사한 사진들을 보여주고, 이에 대한 정보를 딕셔너리에 저장한다.
@@ -98,7 +100,7 @@ class KNN_Classifier :
             self.names_of_knn.append(data[0])
             ax_list.append(fig.add_subplot(int(i/5) + 1,5,i%5 + 1))
             ax_list[i].set_title(data[1])
-            ax_list[i].imshow(image.load_img('../data/knn_img/'+data[0] ,target_size = (224,224)))
+            ax_list[i].imshow(image.load_img('data/knn_img/'+data[0] ,target_size = (224,224)))
         
         print(self.names_of_knn)
     
