@@ -3,7 +3,7 @@ def Tokenizer(data):
     """해시태그를 토큰 단위로 토큰화"""
 
     import pandas as pd
-    from konlpy.tag import Twitter
+    from ckonlpy.tag import Twitter
 
     twitter = Twitter()
 
