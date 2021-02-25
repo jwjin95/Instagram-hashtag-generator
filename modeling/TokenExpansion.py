@@ -54,7 +54,8 @@ def TagExpansion(tokenized, tkn, alpha, pivot):
     probs2 = []
     for t in probs:
         probs2.append(getCondtnlProb(tokenized, t[0], pivot/alpha))
-        
+
+    temp = []    
     probs3 = []
     for t in probs2:
         if len(t) == 0:
