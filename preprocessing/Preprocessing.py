@@ -1,38 +1,36 @@
 def PreprocessingHashtags(path):
-
-    """해시태그 전처리"""
-
+    
     import pandas as pd
     import re
-
+    
     # 데이터 불러오기
-    data = pd.read_csv(path, index_col=0)
-
-    # 해시태그에서 특수문자 제거 후 우물 정(#) 기준으로 분리
-    p = re.compile(r'[가-힣# ]+')
-    data['hashtags_cleaned'] = data['hashtags'].apply(lambda x: ''.join(p.findall(str(x))))
-    data['hashtags_splitted'] = data['hashtags_cleaned'].apply(lambda x: x.split('#'))
-
+    data = pd.read_csv(path).iloc[:, 1:]
+    data = data[data['hashtags'].notnull()] # 해시태그 nan 제거
+    data = data.drop_duplicates('image_url') # 중복 행 제거
+    
+    # 한글 외 제거 후 우물 정(#) 기준으로 분리
+    p = re.compile(r'[가-힣#]+')
+    data['hashtags_splitted'] = data['hashtags'].apply(lambda x: ''.join(p.findall(str(x))).split('#'))
+    
     # 빈 해시태그 제거
     data['hashtags_completed'] = ''
     for i in range(len(data)):
-        ls = [word for word in data.loc[i, 'hashtags_splitted'] if word != '']
-        data.loc[i, 'hashtags_completed'] = ls
-
-    # 장소를 해시태그에 추가
-    l = data['location'].fillna('')
-    for i in range(len(data)):
-        result = re.compile(r'[가-힣]+').search(l[i])
-        if result != None:
-            data.loc[i, 'hashtags_completed'].append(result.group())
+        ls = [word for word in data.iloc[i]['hashtags_splitted'] if word!='']
+        data['hashtags_completed'].iloc[i] = ls
 
     # 컬럼 삭제
-    data.drop(['hashtags', 'hashtags_cleaned', 'hashtags_splitted'], axis=1, inplace=True)
+    data.drop(['hashtags', 'hashtags_splitted'], axis=1, inplace=True)
 
     # 컬럼명 변경
-    data.rename({'hashtags_completed': 'hashtags'}, axis=1, inplace=True)
+    data.rename({'hashtags_completed':'hashtags'}, axis=1, inplace=True)
 
+    # 인덱스 reset
+    data.reset_index(inplace=True)
+    data.drop('index', axis=1, inplace=True)
+    
     return data
+    
+
 
 def DeleteLowFreqHashtags(data):
 
